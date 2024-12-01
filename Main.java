@@ -1,135 +1,95 @@
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.Period;
+import java.util.Scanner;
+
 public class Main {
+    public static class HeartRates {
 
-    public static class Customer {
+        final int heartRate = 70;
+        private final float Lower_Boundary = 0.5f;
+        private final float Upper_Boundary = 0.85f;
+        private String firstname;
+        private String lastname;
+        private LocalDate DateofBirth;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
 
-        private String FirstName;
-        private String LastName;
-        private String SocSecurityNumber;
-        private String BillingAddress;
-        private String ShippingAddress;
 
-        public Customer(String FirstName, String LastName, String SocSecurityNumber) {
-            this.FirstName = FirstName;
-            this.LastName = LastName;
-            this.SocSecurityNumber = SocSecurityNumber;
+        public HeartRates(String firstname, String lastname, LocalDate dateofBirth) {
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.DateofBirth = dateofBirth;
         }
 
-        public void setFirstName(String FirstName) {
-            this.FirstName = FirstName;
+
+        public void SetDateofBirth(LocalDate dateofBirth) {
+            this.DateofBirth = dateofBirth;
         }
 
-        public void setLastName(String LastName) {
-            this.LastName = LastName;
+        public void SetFirstname(String firstname) {
+            this.firstname = firstname;
         }
 
-        public void setSocSecurityNumber(String SocSecurityNumber) {
-            this.SocSecurityNumber = SocSecurityNumber;
+        public void SetLastname(String lastname) {
+            this.lastname = lastname;
         }
 
-        public void setBillingAddress(String BillingAddress) {
-            this.BillingAddress = BillingAddress;
+        public String GetDateofBirth() {
+            return DateofBirth.format(formatter);
         }
 
-        public void setShippingAddress(String ShippingAddress) {
-            this.ShippingAddress = ShippingAddress;
+        public String GetFirstname() {
+            return firstname;
         }
 
-        public String GetFirstName() {
-            return FirstName;
+        public String GetLastname() {
+            return lastname;
         }
 
-        public String GetLastName() {
-            return LastName;
+
+        public String Target_HeartRate() {
+            int result = Maximum_Heart_Rate() - heartRate;
+            float AVERAGE = Math.round(result);
+
+            float LBTHR = (AVERAGE * Lower_Boundary) + heartRate;
+
+            float UBTHR = (AVERAGE * Upper_Boundary) + heartRate;
+
+            String Heart_Rate = String.format("The Target Heart Rate Range is between: % f and % f ", LBTHR, UBTHR);
+            return Heart_Rate;
         }
 
-        public String GetSocSecurityNumber() {
-            return SocSecurityNumber;
+        public int Maximum_Heart_Rate() {
+            int result = 220 - CalculateAge(DateofBirth);
+            return result;
         }
 
-        public String GetBillingAddress() {
-            return BillingAddress;
+        public int CalculateAge(LocalDate DateOfBirth) {
+            LocalDate currentDate = LocalDate.now();
+            Period age = Period.between(DateOfBirth, currentDate);
+            int Years = age.getYears();
+            return Years;
         }
 
-        public String GetShippingAddress() {
-            return ShippingAddress;
-        }
-
+        @Override
         public String toString() {
-            return FirstName + " " + LastName + " " + SocSecurityNumber + " " + BillingAddress + " " + ShippingAddress; //retu
-        }
-    }
-
-    public static class Adress {
-        private String Street;
-        private String City;
-        private String State;
-        private String ZipCode;
-
-        public Adress(String Street, String City, String State, String ZipCode) {
-            this.Street = Street;
-            this.City = City;
-            this.State = State;
-            this.ZipCode = ZipCode;
-        }
-
-        public void setStreet(String Street) {
-            this.Street = Street;
-        }
-
-        public void setCity(String City) {
-            this.City = City;
-        }
-
-        public void setState(String State) {
-            this.State = State;
-        }
-
-        public void setZipCode(String ZipCode) {
-            this.ZipCode = ZipCode;
-        }
-
-        public String getStreet() {
-            return Street;
-        }
-
-        public String getCity() {
-            return City;
-        }
-
-        public String getState() {
-            return State;
-        }
-
-        public String getZipCode() {
-            return ZipCode;
+            return Target_HeartRate() + "\nfirstname: " + firstname + "\nLastname: " + lastname + "\nDate of Birth: " + DateofBirth + "\nAge : " + CalculateAge(DateofBirth) + "\nMaximum Heart Rate: " + Maximum_Heart_Rate();
         }
     }
 
     public static void main(String[] args) {
-        Adress Adress1 = new Adress("123 Main St", "Chicago", "AS", "12345");
-        Adress Adress2 = new Adress("1000 Main St", "Iowa", "FR", "52557");
-        Adress Adress3 = new Adress("789 Main St", "Texas", "N", "12345");
 
-        Customer Customer1 = new Customer("Ali", "Elgazzar", "123-45-6698");
-        Customer1.setBillingAddress(Adress1.getCity());
-        Customer1.setShippingAddress(Adress1.getCity());
-
-        Customer Customer2 = new Customer("Amin", "mohamed", "159-55-6555");
-        Customer2.setBillingAddress(Adress1.getCity());
-        Customer2.setShippingAddress(Adress2.getCity());
-
-        Customer Customer3 = new Customer("John", "Daison", "147-45-6733");
-        Customer3.setBillingAddress(Adress2.getCity());
-        Customer3.setShippingAddress(Adress3.getCity());
-
-        Customer[] CustsData = {Customer1, Customer2, Customer3};
-        for (Customer Index : CustsData) {
-            if (Index.GetBillingAddress().equals("Chicago")) {
-                System.out.println(Index.toString());
-            }
-        }
-
-
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter your First Name");
+        String firstname = sc.nextLine();
+        System.out.println("Enter your Last Name");
+        String lastname = sc.nextLine();
+        System.out.println("Enter your Birthday as format -> year-month-day");
+        LocalDate dateofBirth = LocalDate.parse(sc.nextLine());
+        sc.close();
+        HeartRates Personnalinfo = new HeartRates(firstname, lastname, dateofBirth);
+        String data = Personnalinfo.toString();
+        System.out.println(data);
     }
 }
